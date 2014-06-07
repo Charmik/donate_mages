@@ -17,15 +17,15 @@ import java.util.ArrayList;
 
 public class Main {
 
-    static BufferedImage mag_eng = null;
-    static BufferedImage mag_rus = null;
-
     public static void main(String[] args) throws IOException, AWTException, InterruptedException {
+        String path = new File(".").getCanonicalPath();
         BufferedImage image2 = null; //small picture(button)
+        BufferedImage mag_eng = null;
+        BufferedImage mag_rus = null;
         try {
-            image2 = ImageIO.read(new File("D:\\don.png"));
-            mag_eng = ImageIO.read(new File("D:\\mageng.png"));
-            mag_rus = ImageIO.read(new File("D:\\magrus.png"));
+            image2 = ImageIO.read(new File(path + "\\don.png"));
+            mag_eng = ImageIO.read(new File(path + "\\mageng.png"));
+            mag_rus = ImageIO.read(new File(path + "\\magrus.png"));
         } catch (IOException e) {
             System.out.println("cant donwload image1");
         }
@@ -34,13 +34,15 @@ public class Main {
         //y = 250 начала чата
         // y = 820 конец чата
 
+        Point reload = new Point(590,520);
+        Point openChat = new Point(20,520);
 
         Robot robot = new Robot();
         while (true) {
-            robot.mouseMove(590,520);
+            robot.mouseMove(reload.x, reload.y);
             robot.keyPress(KeyEvent.VK_ENTER);
             Thread.sleep(5000);
-            robot.mouseMove(20,520);
+            robot.mouseMove(openChat.x, openChat.y);
             robot.mousePress(InputEvent.BUTTON1_MASK);
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
@@ -49,57 +51,33 @@ public class Main {
             int y1 = 250;
             int x2 = 330;
             int y2 = 820;
+
             CompareImages comp = new CompareImages();
             ArrayList<Point> list = comp.compare(image1, image2, x1, y1, x2, y2);
             int xCoord = list.get(0).x;
             int yCoord = list.get(0).y;
-            ArrayList<Point> tmp1 = comp.compare(image1, mag_eng, 0, list.get(0).y - 70, x2, list.get(0).y);
-            ArrayList<Point> tmp2 = comp.compare(image1, mag_rus, 0, list.get(0).y - 70, x2, list.get(0).y);
-            if (tmp1.size() == 1 && tmp2.size() == 1)
+            ArrayList<Point> engFound = comp.compare(image1, mag_eng, 0, yCoord - 70, x2, yCoord);
+            ArrayList<Point> rusFound = comp.compare(image1, mag_rus, 0, yCoord - 70, x2, yCoord);
+            if (engFound.size() == 1 && rusFound.size() == 1)
                 continue;
 
-            robot.mouseMove(xCoord, yCoord);
-                Thread.sleep(1000);
+            robot.mouseMove(xCoord, yCoord); //button donate
+            Thread.sleep(300);
 
-            robot.mousePress(InputEvent.BUTTON1_MASK);
+            robot.mousePress(InputEvent.BUTTON1_MASK); //open window donate
             robot.mouseRelease(InputEvent.BUTTON1_MASK);
 
-            xCoord += 600;
-            yCoord -= 50;
-            robot.mouseMove(xCoord, yCoord); //where mages
+            robot.mouseMove(xCoord + 620, yCoord - 50); //where mages
 
-            Thread.sleep(2000);
+            Thread.sleep(1000);
 
             for (int j = 0; j < 5; j++) {
                 Thread.sleep(500);
                 robot.mousePress(InputEvent.BUTTON1_MASK);
                 robot.mouseRelease(InputEvent.BUTTON1_MASK);
             }
-            robot.keyPress(KeyEvent.VK_ESCAPE);
+            robot.keyPress(KeyEvent.VK_ESCAPE); //exit donate window
         }
-    }
-
-    private static boolean check(Point point, BufferedImage image, BufferedImage big) {
-        int x1 = point.x;
-        int y1 = point.y;
-        int x2 = x1 + image.getWidth();
-        int y2 = y1 + image.getHeight();
-        for (int i = x1; i < x2; i++) {
-            for (int j = y1; j < y2; j++) {
-                int t1 = big.getRGB(i, j);
-                int t2 = image.getRGB(i - x1, j - y1);
-                if (t1 != t2) {
-                    return false;
-                }
-            }
-        }
-        /*int t;
-        for(int i = 30; i <= 400; i++)
-            for(int j = 300; j <= 400; j++)
-                if (big.getRGB(i,j) == image.getRGB(0,0)) {
-                    t = i + j;
-                }*/
-        return true;
     }
 
     private static BufferedImage get_screen() throws AWTException {
@@ -107,7 +85,6 @@ public class Main {
         Rectangle screenRectangle = new Rectangle(screenSize);
         Robot robot = new Robot();
         BufferedImage image = robot.createScreenCapture(screenRectangle);
-        //ImageIO.write(image, "png", new File("D:\\test\\123.png"));
         return image;
     }
 
