@@ -17,6 +17,7 @@ import java.util.ArrayList;
 
 public class Main {
 
+
     public static void main(String[] args) throws IOException, AWTException, InterruptedException {
         String path = new File(".").getCanonicalPath();
         BufferedImage image2 = null; //small picture(button)
@@ -34,11 +35,47 @@ public class Main {
         //y = 250 начала чата
         // y = 820 конец чата
 
-        Point reload = new Point(590,520);
-        Point openChat = new Point(20,520);
+        Point reload = new Point(590, 520);
+        Point openChat = new Point(20, 440);
 
         Robot robot = new Robot();
+
+        int cnt = 0;
         while (true) {
+            cnt++;
+            if (cnt == 1000) { //build mages
+                cnt = 0;
+                robot.mouseMove(820, 160); //first barrack
+                Thread.sleep(500);
+                robot.mousePress(InputEvent.BUTTON1_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                robot.mouseMove(820, 760);
+                Thread.sleep(500);
+                robot.mousePress(InputEvent.BUTTON1_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                Thread.sleep(500);
+                for(int step = 0; step < 4; step++) {
+                    robot.mouseMove(520, 560);
+                    for(int i = 0; i < 15; i++) {
+                        robot.mousePress(InputEvent.BUTTON1_MASK);
+                        robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                        Thread.sleep(100);
+                    }
+                    robot.mouseMove(1000, 500);
+                    robot.mousePress(InputEvent.BUTTON1_MASK);
+                    robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                    Thread.sleep(500);
+                }
+                robot.mouseMove(1100, 300);
+                Thread.sleep(500);
+                robot.mousePress(InputEvent.BUTTON1_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                Thread.sleep(500);
+                robot.mousePress(InputEvent.BUTTON1_MASK);
+                robot.mouseRelease(InputEvent.BUTTON1_MASK);
+                Thread.sleep(500);
+            }
+
             robot.mouseMove(reload.x, reload.y);
             robot.keyPress(KeyEvent.VK_ENTER);
             Thread.sleep(5000);
@@ -48,7 +85,7 @@ public class Main {
 
             BufferedImage image1 = get_screen();
             int x1 = 50;
-            int y1 = 250;
+            int y1 = 200;
             int x2 = 330;
             int y2 = 820;
 
